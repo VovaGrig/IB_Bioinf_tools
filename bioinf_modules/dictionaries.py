@@ -1,4 +1,4 @@
-amino_acids = {
+AMINO_ACIDS = {
     "A": "Ala",
     "C": "Cys",
     "D": "Asp",
@@ -40,7 +40,7 @@ amino_acids = {
     "w": "trp",
     "y": "tyr",
 }
-translation_rule = {
+TRANSLATION_RULE = {
     "F": "UUU",
     "f": "uuu",
     "L": "CUG",
@@ -82,7 +82,7 @@ translation_rule = {
     "G": "GGC",
     "g": "ggc",
 }
-amino_acid_weights = {
+AMINO_ACID_WEIGHTS = {
     "A": 89.09,
     "C": 121.16,
     "D": 133.10,
@@ -104,3 +104,5 @@ amino_acid_weights = {
     "W": 204.23,
     "Y": 181.19,
 }
+NUCL_ACIDS_COMPLEMENT_RULE = {"A": "T", "T": "A", "G": "C", "C": "G", "a": "t", "t": "a",
+            "g": "c", "c": "g", "U": "A", "u": "a"}
