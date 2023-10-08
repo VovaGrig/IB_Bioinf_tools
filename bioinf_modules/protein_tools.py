@@ -1,7 +1,7 @@
 import dictionaries
 
 
-def three_one_letter_code(sequences: str) -> list:
+def three_one_letter_code(sequences: (tuple[str] or list[str])) -> list:
     """
     Reverse the protein sequences from one-letter to three-letter format and vice-versa
 
@@ -23,23 +23,35 @@ def three_one_letter_code(sequences: str) -> list:
     """
     inversed_sequences = []
     for sequence in sequences:
-        inversed_sequence = ""
+        inversed_sequence = []
         if "-" not in sequence:
             for letter in sequence:
-                inversed_sequence += dictionaries.amino_acids[letter] + "-"
-            inversed_sequence = inversed_sequence[:-1]
-            inversed_sequences.append(inversed_sequence)
+                if letter.islower():
+                    inversed_sequence.append(
+                        dictionaries.AMINO_ACIDS[letter.capitalize()].lower()
+                    )
+                else:
+                    inversed_sequence.append(dictionaries.AMINO_ACIDS[letter])
+            inversed_sequences.append("-".join(inversed_sequence))
         else:
             aa_splitted = sequence.split("-")
             for aa in aa_splitted:
-                inversed_sequence += list(dictionaries.amino_acids.keys())[
-                    list(dictionaries.amino_acids.values()).index(aa)
-                ]
-            inversed_sequences.append(inversed_sequence)
+                aa_index = list(dictionaries.AMINO_ACIDS.values()).index(
+                    aa.capitalize()
+                )
+                if aa[0].islower():
+                    inversed_sequence.append(
+                        list(dictionaries.AMINO_ACIDS.keys())[aa_index].lower()
+                    )
+                else:
+                    inversed_sequence.append(
+                        list(dictionaries.AMINO_ACIDS.keys())[aa_index]
+                    )
+            inversed_sequences.append("".join(inversed_sequence))
     return inversed_sequences
 
 
-def define_molecular_weight(sequences: str) -> dict:
+def define_molecular_weight(sequences: (tuple[str] or list[str])) -> dict:
     """
     Define molecular weight of the protein sequences
 
@@ -60,7 +72,7 @@ def define_molecular_weight(sequences: str) -> dict:
     for sequence in sequences:
         sequence_weight = 0
         for letter in sequence:
-            sequence_weight += dictionaries.amino_acid_weights[letter.upper()]
+            sequence_weight += dictionaries.AMINO_ACID_WEIGHTS[letter.upper()]
         sequence_weight -= (len(sequence) - 1) * 18  # deduct water from peptide bond
         sequences_weights[sequence] = round(sequence_weight, 2)
     return sequences_weights
@@ -117,7 +129,9 @@ def search_for_motifs(
     return all_positions
 
 
-def search_for_alt_frames(sequences: str, alt_start_aa: str) -> dict:
+def search_for_alt_frames(
+    sequences: (tuple[str] or list[str]), alt_start_aa: str
+) -> dict:
     """
     Search for alternative frames in a protein sequences
 
@@ -150,7 +164,9 @@ def search_for_alt_frames(sequences: str, alt_start_aa: str) -> dict:
     return alternative_frames
 
 
-def convert_to_nucl_acids(sequences: list, nucl_acids: str) -> dict:
+def convert_to_nucl_acids(
+    sequences: (tuple[str] or list[str]), nucl_acids: str
+) -> dict:
     """
     Convert protein sequences to RNA or DNA sequences.
 
@@ -166,27 +182,35 @@ def convert_to_nucl_acids(sequences: list, nucl_acids: str) -> dict:
     Return:
     - dictionary: nucleic acids (str) as keys, collection of sequences (list) as values
     """
-    rule_of_translation = sequences[0].maketrans(dictionaries.translation_rule)
-    rule_of_transcription = sequences[0].maketrans("AaUuCcGg", "TtAaGgCc")
+    rule_of_translation = str.maketrans(dictionaries.TRANSLATION_RULE)
+    # add lower case pairs, because only upper case pairs are stored in dictionaries
+    rule_of_translation.update(
+        str.maketrans(
+            dict(
+                (k.lower(), v.lower()) for k, v in dictionaries.TRANSLATION_RULE.items()
+            )
+        )
+    )
     nucl_acid_seqs = {"RNA": [], "DNA": []}
     for sequence in sequences:
         rna_seq = sequence.translate(rule_of_translation)
-        dna_seq = rna_seq.translate(rule_of_transcription)
         if nucl_acids == "RNA":
             nucl_acid_seqs["RNA"].append(rna_seq)
-            if sequence == sequences[-1]:
-                del nucl_acid_seqs["DNA"]
-        if nucl_acids == "DNA":
+        elif nucl_acids == "DNA":
+            dna_seq = rna_seq.replace("U", "T").replace("u", "t")
             nucl_acid_seqs["DNA"].append(dna_seq)
-            if sequence == sequences[-1]:
-                del nucl_acid_seqs["RNA"]
-        if nucl_acids == "both":
+        elif nucl_acids == "both":
+            dna_seq = rna_seq.replace("U", "T").replace("u", "t")
             nucl_acid_seqs["RNA"].append(rna_seq)
             nucl_acid_seqs["DNA"].append(dna_seq)
+    if nucl_acids == "RNA":
+        del nucl_acid_seqs["DNA"]
+    if nucl_acids == "DNA":
+        del nucl_acid_seqs["RNA"]
     return nucl_acid_seqs
 
 
-procedures_to_functions = {
+PROTEINS_PROCEDURES_TO_FUNCTIONS = {
     "search_for_motifs": search_for_motifs,
     "search_for_alt_frames": search_for_alt_frames,
     "convert_to_nucl_acids": convert_to_nucl_acids,
@@ -196,12 +220,12 @@ procedures_to_functions = {
 
 
 def check_and_parse_user_input(
-    sequences: list[str] or tuple[str], **kwargs
+    sequences: (str, tuple[str] or list[str]), **kwargs
 ) -> dict and str:
     """
     Check if user input can be correctly processed\n
     Parse sequences and arguments for desired procedure
-    
+
     Arguments:
     - sequences (list[str] or tuple[str]): sequences to process
     - **kwargs - needed arguments for completion of desired procedure
@@ -210,29 +234,34 @@ def check_and_parse_user_input(
     - string: procedure name
     - dictionary: a collection of procedure arguments and their values
     """
-    if len(sequences) == 0:
-        raise ValueError("No sequences provided")
+    if isinstance(sequences, str):
+        sequences = sequences.split()
+    if "" in sequences or len(sequences) == 0:
+        raise ValueError("Empty sequence provided")
     procedure = kwargs["procedure"]
-    if procedure not in procedures_to_functions.keys():
+    if procedure not in PROTEINS_PROCEDURES_TO_FUNCTIONS.keys():
         raise ValueError("Wrong procedure")
-    allowed_inputs = set(dictionaries.amino_acids.keys()).union(
-        set(dictionaries.amino_acids.values())
+    allowed_inputs = set(dictionaries.AMINO_ACIDS.keys())
+    allowed_inputs = allowed_inputs.union(
+        set(k.lower() for k in dictionaries.AMINO_ACIDS.keys())
     )
-    allowed_inputs.add("-")
-    if procedure != "three_one_letter_code":
-        allowed_inputs -= set(dictionaries.amino_acids.values())
+    if procedure == "three_one_letter_code":
+        allowed_inputs = allowed_inputs.union(set(dictionaries.AMINO_ACIDS.values()))
+        allowed_inputs = allowed_inputs.union(
+            set(v.lower() for v in dictionaries.AMINO_ACIDS.values())
+        )
     for sequence in sequences:
         allowed_inputs_seq = allowed_inputs.copy()
         if procedure == "three_one_letter_code" and "-" in sequence:
-            allowed_inputs_seq -= set(dictionaries.amino_acids.keys())
-            if not all(
-                aminoacids in allowed_inputs_seq for aminoacids in sequence.split("-")
-            ):
+            allowed_inputs_seq -= set(dictionaries.AMINO_ACIDS.keys())
+            allowed_inputs_seq -= set(
+                k.lower() for k in dictionaries.AMINO_ACIDS.keys()
+            )
+            allowed_inputs_seq.union(set("-"))
+            if not set(sequence.split("-")).issubset(allowed_inputs_seq):
                 raise ValueError("Invalid sequence given")
         else:
-            allowed_inputs_seq.remove("-")
-            allowed_inputs_seq -= set(dictionaries.amino_acids.values())
-            if not all(aminoacids in allowed_inputs_seq for aminoacids in sequence):
+            if not set(sequence).issubset(allowed_inputs_seq):
                 raise ValueError("Invalid sequence given")
     procedure_arguments = {}
     if procedure == "search_for_motifs":
@@ -260,9 +289,9 @@ def check_and_parse_user_input(
     return procedure_arguments, procedure
 
 
-def run_protein_tools(sequences: list[str] or tuple[str], **kwargs: str):
+def run_protein_tools(sequences: (str, tuple[str] or list[str]), **kwargs: str) -> dict:
     """
-    Main function to process protein sequence by one of the developed tools.\n
+    Process protein sequence by one of the developed tools.\n
     Run one procedure at a time:
     - Search for conserved amino acids residues in protein sequence
     - Search for alternative frames in a protein sequences
@@ -271,12 +300,14 @@ def run_protein_tools(sequences: list[str] or tuple[str], **kwargs: str):
     - Define molecular weight of the protein sequences
 
     All functions except *search_for_alt_frames* are letter case sensitive\n
+    If only one sequence provided - *sequences* can be string.\n
+    If more - please provide *sequences* as list or tuple.\n
     Provide protein sequence in one letter code.\n
     You can obtain one letter code from three letter code with *three_one_letter_code*\n
     If more information needed please see README or desired docstring
 
     Arguments:
-    - sequences (list[str] or tuple[str]): sequences to process
+    - sequences (str, list[str] or tuple[str]): sequences to process
     - procedure (str]: desired procedure:
         - "search_for_motifs"
         - "search_for_alt_frames"
@@ -305,4 +336,4 @@ def run_protein_tools(sequences: list[str] or tuple[str], **kwargs: str):
             Please see Readme or desired docstring
     """
     procedure_arguments, procedure = check_and_parse_user_input(sequences, **kwargs)
-    return procedures_to_functions[procedure](**procedure_arguments)
+    return PROTEINS_PROCEDURES_TO_FUNCTIONS[procedure](**procedure_arguments)
