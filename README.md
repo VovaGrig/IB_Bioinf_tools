@@ -5,7 +5,7 @@ Every bioinfomatician at some point of his/her career deals with nucleic acid se
 `bioinf_tools.py` is an open-source program that facilitates working with bioinformatics data.
 
 ## Usage and options
-The programm is based on three main functions:\
+The programm is based on three main functions:
 
 **1.** `run_protein_tools` - facilitates work with protein sequences, has 5 procedures:
   
@@ -66,9 +66,67 @@ Where:
 - quality_thresholds (int | float): read Phred-33 scaled quality thresholds. Default value: *0*
 - verbose (bool): add detailed statistics for each read. Defaukt value: *True*
 
-Please provide GC content bounds in percentages.\
+Please provide GC content bounds in percentages.
 
-For *gc_bounds* and *length_bounds* if one number is provided bounds from 0 to number are considered.\
+For *gc_bounds* and *length_bounds* if one number is provided bounds from 0 to number are considered.
 
-Please provide threshold quality in Phred-33 scale.\
+Please provide threshold quality in Phred-33 scale.
 
+## Examples
+```python
+### run_protein_tools
+
+
+## three_one_letter_code
+run_protein_tools(['met-Asn-Tyr', 'Ile-Ala-Ala'], procedure='three_one_letter_code')  # ['mNY', 'IAA']
+run_protein_tools(['mNY','IAA'], procedure='three_one_letter_code')  # ['met-Asn-Tyr', 'Ile-Ala-Ala']
+
+
+## define_molecular_weight
+run_protein_tools(['MNY','IAA'], procedure='define_molecular_weight')  # {'MNY': 426.52, 'IAA': 273.35}
+
+
+## check_for_motifs
+run_protein_tools(['mNY','IAA'], procedure='search_for_motifs', motif='NY')
+#Sequence: mNY
+#Motif: NY
+#Motif is present in protein sequence starting at positions: 1
+
+#Sequence: IAA
+#Motif: NY
+#Motif is not present in protein sequence
+
+{'mNY': [1], 'IAA': []}
+
+
+## search_for_alt_frames
+run_protein_tools(['mNYQTMSPYYDMId'], procedure='search_for_alt_frames')  # {'mNYQTMSPYYDMId': ['MSPYYDMId']}
+run_protein_tools(['mNYTQTSP'], procedure='search_for_alt_frames', alt_start_aa='T')  # {'mNYTQTSP': ['TQTSP']}
+
+
+## convert_to_nucl_acids
+run_protein_tools('MNY', procedure='convert_to_nucl_acids', nucl_acids = 'RNA')  # {'RNA': ['AUGAACUAU']}
+run_protein_tools('MNY', procedure='convert_to_nucl_acids', nucl_acids = 'DNA')  # {'DNA': ['TACTTGATA']}
+run_protein_tools('MNY', procedure='convert_to_nucl_acids', nucl_acids = 'both') # {'RNA': ['AUGAACUAU'], 'DNA': ['TACTTGATA']}
+
+### run_dna_rna_tools
+run_dna_rna_tools("ATGC", procedure='transcribe') # 'AUGC'
+run_dna_rna_tools("ATGC", procedure='reverse') # 'CGTA'
+run_dna_rna_tools("ATGC", procedure='complement') # 'TACG'
+run_dna_rna_tools("ATGC", procedure='reverse_complement') # 'GCAT'
+
+### run_fastq_filter
+run_fastq_filter(gc_bounds=50)
+#Read: ACAGCAACATAAACATGATGGGATGGCGTAAGCCCCCGAGATATCAGTTTACCCAGGATAAGAGATTAAATTATGAGCAACATTATTAA
+#GC Content: 38.2022
+#Read Length: 89
+#Mean Nucleotide Quality: 36.1011
+
+#Read: GAACGACAGCAGCTCCTGCATAACCGCGTCCTTCTTCTTTAGCGTTGTGCAAAGCATGTTTTGTATTACGGGCATCTCGAGCGAATC
+#GC Content: 49.4253
+#Read Length: 87
+#Mean Nucleotide Quality: 33.2989
+
+#{'@SRX079804:1:SRR292678:1:1101:21885:21885': ('ACAGCAACATAAACATGATGGGATGGCGTAAGCCCCCGAGATATCAGTTTACCCAGGATAAGAGATTAAATTATGAGCAACATTATTAA', 'FGGGFGGGFGGGFGDFGCEBB@CCDFDDFFFFBFFGFGEFDFFFF;D@DD>C@DDGGGDFGDGG?GFGFEGFGGEF@FDGGGFGFBGGD'),
+# '@SRX079804:1:SRR292678:1:1101:30161:30161': ('GAACGACAGCAGCTCCTGCATAACCGCGTCCTTCTTCTTTAGCGTTGTGCAAAGCATGTTTTGTATTACGGGCATCTCGAGCGAATC', 'DFFFEGDGGGGFGGEDCCDCEFFFFCCCCCB>CEBFGFBGGG?DE=:6@=>A<A>D?D8DCEE:>EEABE5D@5:DDCA;EEE-DCD')}
+```
