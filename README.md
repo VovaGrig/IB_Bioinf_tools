@@ -25,11 +25,14 @@ Where:
 - sequences: positional argument, a *str | list[str] | tuple[str]* of protein sequences
 - procedure: keyword argument, a type of procedure to use that is inputed in *string* type
 - ... - an additional keyword arguments. Those are:
+  
   For "search_for_motif" procedure:
 - motif (str): desired motif to check presense in every given sequence. Example: motif = "GA"
-- overlapping (bool): count (True) or skip (False) overlapping matches. Example: overlapping = False (Optional)\
+- overlapping (bool): count (True) or skip (False) overlapping matches. Example: overlapping = False (Optional)
+  
   For "search_for_alt_frames" procedure:
-- alt_start_aa (str): the name of an amino acid that is encoded by alternative start codon. Example: alt_start_aa = "I" (Optional)\
+- alt_start_aa (str): the name of an amino acid that is encoded by alternative start codon. Example: alt_start_aa = "I" (Optional)
+  
   For "convert_to_nucl_acids" procedure:
 - nucl_acids (str): the nucleic acid to convert to. Example: nucl_acids = "both" | nucl_acids = "RNA"
 
@@ -54,10 +57,10 @@ Where:
 - read length: **length_bounds** 
 - mean nucleotide quality: **quality_threshold**
 
-Function works with default arguments. 
+Function works with default arguments as usage example.\ 
 To start with the program run the following command:
 
-`run_fastq_filter(seqs, gc_bounds, length_bounds, quality_threshold, verbose=True)`
+`run_fastq_filter(gc_bounds=50)`
 
 Where:
 - seqs (dict[str, tuple[str] | list[str]]): fastq reads to be filtered. Default value: *an example dictionary*
