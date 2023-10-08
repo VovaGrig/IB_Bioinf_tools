@@ -68,17 +68,17 @@ def run_protein_tools(sequences: (str, tuple[str] or list[str]), **kwargs: str) 
         - "define_molecular_weight"
 
     For "search_for_motif" procedure provide:
-    - motif (str]: desired motif to check presense in every given sequence\n
+    - motif (str): desired motif to check presense in every given sequence\n
             Example: motif = "GA"
     - overlapping (bool): count (True) or skip (False) overlapping matches. (Optional)\n
             Example: overlapping = False
 
     For "search_for_alt_frames" procedure provide:
-    - alt_start_aa (str]: the name of an amino acid that is encoded by alternative start codon (Optional)\n
+    - alt_start_aa (str): the name of an amino acid that is encoded by alternative start codon (Optional)\n
             Example: alt_start_aa = "I"
 
     For "convert_to_nucl_acids" procedure provide:
-    - nucl_acids (str]: the nucleic acid to convert to\n
+    - nucl_acids (str): the nucleic acid to convert to\n
             Example: nucl_acids = "RNA"\n
                            nucl_acids = "DNA"\n
                            nucl_acids = "both"
@@ -108,7 +108,7 @@ def run_fastq_filter(
     },
     gc_bounds: (int | float | tuple[int | float] | list[int | float]) = (0, 100),
     length_bounds: (tuple[int]) = (0, 2**32),
-    quality_threshold: (int) = 0,
+    quality_threshold: (int | float) = 0,
     verbose=True,
 ) -> dict:
     """
