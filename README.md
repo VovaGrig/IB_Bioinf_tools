@@ -96,7 +96,7 @@ run_protein_tools(['mNY','IAA'], procedure='search_for_motifs', motif='NY')
 #Motif: NY
 #Motif is not present in protein sequence
 
-{'mNY': [1], 'IAA': []}
+#{'mNY': [1], 'IAA': []}
 
 
 ## search_for_alt_frames
