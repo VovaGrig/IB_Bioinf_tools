@@ -110,7 +110,7 @@ run_protein_tools('MNY', procedure='convert_to_nucl_acids', nucl_acids = 'DNA') 
 run_protein_tools('MNY', procedure='convert_to_nucl_acids', nucl_acids = 'both') # {'RNA': ['AUGAACUAU'], 'DNA': ['TACTTGATA']}
 
 ### run_dna_rna_tools
-run_dna_rna_tools("ATGC", procedure='transcribe') # 'AUGC'
+run_dna_rna_tools(("ATGC", "TGCA"), procedure='transcribe') # {'ATGC': 'AUGC', 'TGCA': 'UGCA'}
 run_dna_rna_tools("ATGC", procedure='reverse') # 'CGTA'
 run_dna_rna_tools("ATGC", procedure='complement') # 'TACG'
 run_dna_rna_tools("ATGC", procedure='reverse_complement') # 'GCAT'
