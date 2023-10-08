@@ -1,5 +1,5 @@
 from src import dna_rna_tools
-from src import fastq_tools
+from src import fastq_filter
 from src import protein_tools
 
 
@@ -136,9 +136,9 @@ def run_fastq_filter(
         length_bounds,
         quality_threshold,
         verbose,
-    ) = fastq_tools.check_user_input(
+    ) = fastq_filter.check_user_input(
         seqs, gc_bounds, length_bounds, quality_threshold, verbose
     )
-    return fastq_tools.fastq_filter(
+    return fastq_filter.fastq_filter(
         seqs, gc_bounds, length_bounds, quality_threshold, verbose
     )
