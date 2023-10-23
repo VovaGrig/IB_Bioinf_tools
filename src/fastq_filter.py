@@ -1,4 +1,7 @@
-import dictionaries
+if __name__ == "__main__":
+    import dictionaries
+else:
+    from src import dictionaries
 
 
 def check_user_input(
@@ -16,6 +19,7 @@ def check_user_input(
     - gc_bounds (int | float | tuple[int | float] | list[int | float]): GC content thresholds
     - length_bounds (int | tuple[int] | list[int]): read length thresholds
     - quality_thresholds: read Phred-33 scaled quality thresholds
+    - verbose (bool): add detailed statistics for each read
 
     Return:
     - same arguments as input, checked for correctness
@@ -49,6 +53,7 @@ def fastq_filter(
     - gc_bounds (int | float | tuple[int | float] | list[int | float]): GC content thresholds
     - length_bounds (int | tuple[int] | list[int]): read length thresholds
     - quality_thresholds: read Phred-33 scaled quality thresholds
+    - verbose (bool): add detailed statistics for each read
 
     Return:
     - seqs_filtered (dict): similar dictionary as input, bad reads are filtered out
@@ -58,10 +63,12 @@ def fastq_filter(
         seq = seqs[seq_name][0]
         seq_qual = seqs[seq_name][1]
         gc_result = is_gc_good(seq, gc_bounds, verbose)
-        len_result = is_len_good(seq, length_bounds, verbose)
-        qual_result = is_qual_good(seq_qual, quality_threshold, verbose)
-        if gc_result and len_result and qual_result:
-            seqs_filtered[seq_name] = seqs[seq_name]
+        if gc_result:
+            len_result = is_len_good(seq, length_bounds, verbose)
+            if len_result:
+                qual_result = is_qual_good(seq_qual, quality_threshold, verbose)
+                if qual_result:
+                    seqs_filtered[seq_name] = seqs[seq_name]
     return seqs_filtered
 
 
@@ -79,6 +86,7 @@ def is_gc_good(
     Arguments:
     - seq (str): read to check it's length
     - gc_bounds (int | float | tuple[int] | list[int]): GC content thresholds, by which reads are filtered
+    - verbose (bool): add detailed statistics for each read
 
     Return:
     - condition (bool): True - GC content is within bounds, False - read is to be filtered
@@ -103,6 +111,7 @@ def is_len_good(
     Arguments:
     - seq (str): read to check it's length
     - length_bounds (int | tuple[int] | list[int]): length thresholds, by which reads are filtered
+    - verbose (bool): add detailed statistics for each read
 
     Return:
     - condition (bool): True - length is within bounds, False - read is to be filtered
@@ -123,6 +132,7 @@ def is_qual_good(seq_qual: str, quality_threshold: int | float, verbose) -> bool
     Arguments:
     - seq_qual (str): quality sequence in Phred-33 scale for a read
     - quality_threshold (int | float): threshold, by which reads are filtered
+    - verbose (bool): add detailed statistics for each read
 
     Return:
     - condition (bool): True - quality is above threshold, False - read is to be filtered

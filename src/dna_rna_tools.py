@@ -1,5 +1,7 @@
-import dictionaries
-
+if __name__ == "__main__":
+    import dictionaries
+else:
+    from src import dictionaries
 
 def check_user_input(sequences: str or list[str] or tuple[str], procedure):
     """

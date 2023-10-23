@@ -109,7 +109,7 @@ def run_fastq_filter(
     gc_bounds: (int | float | tuple[int | float] | list[int | float]) = (0, 100),
     length_bounds: (tuple[int]) = (0, 2**32),
     quality_threshold: (int | float) = 0,
-    verbose=True,
+    verbose=False,
 ) -> dict:
     """
     Filter out fastq reads by several parameters:
@@ -124,8 +124,9 @@ def run_fastq_filter(
     - seqs (dict[str, tuple[str] | list[str]]): fastq reads to be filtered
     - gc_bounds (int | float | tuple[int | float] | list[int | float]): GC content thresholds
     - length_bounds (int | tuple[int] | list[int]): read length thresholds
-    - quality_thresholds: read Phred-33 scaled quality thresholds
-    Examples are provided as default values for each argument
+    - quality_thresholds (int | float): read Phred-33 scaled quality thresholds
+    - verbose (bool): add detailed statistics for each read
+    Examples are provid ed as default values for each argument
 
     Return:
     - seqs_filtered (dict): similar dictionary as input, bad reads are filtered out

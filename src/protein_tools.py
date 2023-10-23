@@ -1,5 +1,7 @@
-import dictionaries
-
+if __name__ == "__main__":
+    import dictionaries
+else:
+    from src import dictionaries
 
 def three_one_letter_code(sequences: (tuple[str] or list[str])) -> list:
     """
