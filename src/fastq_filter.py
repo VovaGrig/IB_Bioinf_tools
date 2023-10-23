@@ -11,7 +11,7 @@ def parse_and_check_user_input(
     length_bounds: (int | tuple[int] | list[int]),
     quality_threshold: int,
     verbose: bool,
-    output_filename: "str",
+    output_filename: str,
 ):
     """
     Parse input fastq file to dictionary[sequence_name: [sequence, sequence_quality]] and check if input can be correctly processed\n
