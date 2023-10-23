@@ -103,14 +103,6 @@ def select_genes_from_gbk_to_fasta(
                             out.write(f">{out_gene}\n{translation}\n")
 
 
-select_genes_from_gbk_to_fasta(
-    "/mnt/c/users/vovag/Documents/IB/Python_1sem/HW5_Grigoriants/example_gbk.gbk",
-    genes="ybgD_2",
-    n_before=10,
-    n_after=10,
-)
-
-
 def change_fasta_start_pos(input_fasta: str, shift: int, output_fasta: str = ""):
     """
     Shift the starting position of each sequence in a fasta file by a specified number of nucleotides and saves the modified sequences in a new fasta file.
