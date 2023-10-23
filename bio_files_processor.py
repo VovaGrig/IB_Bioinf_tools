@@ -11,10 +11,11 @@ def convert_multiline_fasta_to_oneline(input_fasta: str, output_fasta: str = "")
     If output_fasta is not provided, output file will be saved in the current directory with the same name as input file but with "_oneline.fasta" suffix.
 
     Return:
-    None
+        None
 
     Example:
-        convert_multiline_fasta_to_oneline("input.fasta", "output.fasta")"""
+        convert_multiline_fasta_to_oneline("input.fasta", "output.fasta")
+    """
     if output_fasta == "":
         output_fasta = os.path.basename(input_fasta)
         output_fasta = output_fasta.replace(".fasta", "_oneline.fasta")
