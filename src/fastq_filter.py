@@ -5,7 +5,7 @@ else:
 
 
 def check_user_input(
-    seqs: dict[str, tuple[str] | list[str]],
+    sequences_path: str,
     gc_bounds: (int | float | tuple[int | float] | list[int | float]),
     length_bounds: (int | tuple[int] | list[int]),
     quality_threshold: int,
@@ -24,8 +24,17 @@ def check_user_input(
     Return:
     - same arguments as input, checked for correctness
     """
-    if not isinstance(seqs, dict):
-        raise ValueError("Please provide sequences info with a dictionary")
+    seqs = {}
+    with open(sequences_path, "r") as seqs_file:
+        count = 0
+        for line in seqs_file:
+            count += 1
+            if count == 1 or count % 5 == 0:
+                seqs[line.strip()] = []
+            if count % 2 == 0:
+                seqs[list(seqs)[-1]].append(line)
+            if count % 4 == 0:
+                seqs[list(seqs)[-1]].append(line)
     for seq_name in seqs.keys():
         if not isinstance(seq_name, str):
             raise ValueError("Invalid sequence name given")
