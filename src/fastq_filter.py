@@ -29,7 +29,7 @@ def check_user_input(
         count = 0
         for line in seqs_file:
             count += 1
-            if count == 1 % (count-1) % 4 == 0:
+            if count == 1 or (count-1) % 4 == 0:
                 seqs[line.strip()] = []
             if count % 2 == 0 and count % 4 != 0:
                 seqs[list(seqs)[-1]].append(line.strip())
