@@ -41,7 +41,7 @@ def convert_multiline_fasta_to_oneline(input_fasta: str, output_fasta: str = "")
 
 def select_genes_from_gbk_to_fasta(
     input_gbk: str,
-    genes: tuple[str] or list[str],
+    genes: str or tuple[str] or list[str],
     n_before: int = 1,
     n_after: int = 1,
     output_fasta: str = "",
@@ -51,7 +51,7 @@ def select_genes_from_gbk_to_fasta(
 
     Arguments:
     - input_gbk (str): Path to the input GenBank (gbk) file.
-    - genes (tuple[str] or list[str]): List of gene names to extract translations for.
+    - genes (str or tuple[str] or list[str]): Gene name or list of gene names to extract neigbhour genes translations for.
     - n_before (int, optional): Number of genes to include before the desired gene. Defaults to 1.
     - n_after (int, optional): Number of genes to include after the desired gene. Defaults to 1.
     - output_fasta (str, optional): Path to the output FASTA file.\\
@@ -67,6 +67,8 @@ def select_genes_from_gbk_to_fasta(
         output_fasta = os.path.basename(input_gbk)
         output_fasta = output_fasta.replace(".gbk", "_trans_for_blast.fasta")
     output_path = os.path.join("./", output_fasta)
+    if isinstance(genes, str):
+        genes = [genes]
     with open(input_gbk, "r") as input:
         translations = []
         ind = 0
@@ -99,6 +101,14 @@ def select_genes_from_gbk_to_fasta(
                             was_printed.add(i)
                             out_gene, translation = translations[i]
                             out.write(f">{out_gene}\n{translation}\n")
+
+
+select_genes_from_gbk_to_fasta(
+    "/mnt/c/users/vovag/Documents/IB/Python_1sem/HW5_Grigoriants/example_gbk.gbk",
+    genes="ybgD_2",
+    n_before=10,
+    n_after=10,
+)
 
 
 def change_fasta_start_pos(input_fasta: str, shift: int, output_fasta: str = ""):
