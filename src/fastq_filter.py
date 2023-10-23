@@ -169,6 +169,9 @@ def save_filtered_seqs(
     - filtered_seqs (dict[str, list[str]]): filtered fastq_reads
     - output_filename (str): output name of the filtered fastq file
     - save_to_dir (str): absolute or realtive path to directory to save to
+
+    Return:
+        None
     """
     os.makedirs(save_to_dir, exist_ok=True)
     output_path = os.path.join(save_to_dir, output_filename)
