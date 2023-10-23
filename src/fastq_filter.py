@@ -14,15 +14,15 @@ def parse_and_check_user_input(
     output_filename: "str",
 ):
     """
-    Parse input fasta file to dictionary[sequence_name: [sequence, sequence_quality]] and check if input can be correctly processed\n
+    Parse input fastq file to dictionary[sequence_name: [sequence, sequence_quality]] and check if input can be correctly processed\n
 
     Arguments:
-    - sequences_path(str): absolute or relative path to desired file, containing sequences in fasta format
+    - sequences_path(str): absolute or relative path to desired file, containing sequences in fastq format
     - gc_bounds (int | float | tuple[int | float] | list[int | float]): GC content thresholds
     - length_bounds (int | tuple[int] | list[int]): read length thresholds
     - quality_thresholds: read Phred-33 scaled quality thresholds
     - verbose (bool): add detailed statistics for each read
-    - output_filename (str): output name of the filtered fasta file
+    - output_filename (str): output name of the filtered fastq file
 
     Return:
     - same arguments as input, checked for correctness
@@ -163,11 +163,11 @@ def save_filtered_seqs(
     save_to_dir: str,
 ):
     """
-    Save filtered reads in fasta format.
+    Save filtered reads in fastq format.
 
     Arguments:
     - filtered_seqs (dict[str, list[str]]): filtered fastq_reads
-    - output_filename (str): output name of the filtered fasta file
+    - output_filename (str): output name of the filtered fastq file
     - save_to_dir (str): absolute or realtive path to directory to save to
     """
     os.makedirs(save_to_dir, exist_ok=True)
@@ -177,7 +177,7 @@ def save_filtered_seqs(
         filtered_seqs[seq_name] = [x + "\n" for x in filtered_seqs[seq_name]]
     filtered_seqs[list(filtered_seqs)[-1]][1] = filtered_seqs[list(filtered_seqs)[-1]][
         1
-    ].strip()  # get rid of last \n, to avoid empty line in filtered fasta file
+    ].strip()  # get rid of last \n, to avoid empty line in filtered fastq file
     with open(output_path, "w") as output_file:
         for key, value in filtered_seqs.items():
             output_file.write("%s\n%s%s%s" % (key, value[0], value[2], value[1]))

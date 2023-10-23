@@ -110,19 +110,20 @@ def run_fastq_filter(
     - GC content
     - length
     - mean nucleotide quality
+    Save filtered reads in fastq format.
     Please provide GC content bounds in percentages.\n
     Please provide threshold quality in Phred-33 scale.\n
     For GC content and length bounds: if one number is provided, bounds from 0 to number are considered.\n
 
     Arguments:
-    - sequences_path (str): absolute or relative path to desired file, containing sequences in fasta format
+    - sequences_path (str): absolute or relative path to desired file, containing sequences in fastq format
     - gc_bounds (int | float | tuple[int | float] | list[int | float]): GC content thresholds
     - length_bounds (int | tuple[int] | list[int]): read length thresholds
     - quality_thresholds (int | float): read Phred-33 scaled quality thresholds
     - verbose (bool): add detailed statistics for each read
-    - save_filtered_seqs (bool): save filtered reads to fasta file
+    - save_filtered_seqs (bool): save filtered reads to fastq file
     - save_to_dir (str): absolute or realtive path to directory to save to
-    - output_filename (str): output name of the filtered fasta file
+    - output_filename (str): output name of the filtered fastq file
     For examples see default values for each argument
 
     Return:
