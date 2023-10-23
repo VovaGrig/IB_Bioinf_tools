@@ -96,20 +96,14 @@ def run_protein_tools(sequences: (str, tuple[str] or list[str]), **kwargs: str) 
 
 
 def run_fastq_filter(
-    seqs: dict[str, tuple[str] | list[str]] = {
-        "@SRX079804:1:SRR292678:1:1101:21885:21885": (
-            "ACAGCAACATAAACATGATGGGATGGCGTAAGCCCCCGAGATATCAGTTTACCCAGGATAAGAGATTAAATTATGAGCAACATTATTAA",
-            "FGGGFGGGFGGGFGDFGCEBB@CCDFDDFFFFBFFGFGEFDFFFF;D@DD>C@DDGGGDFGDGG?GFGFEGFGGEF@FDGGGFGFBGGD",
-        ),
-        "@SRX079804:1:SRR292678:1:1101:30161:30161": (
-            "GAACGACAGCAGCTCCTGCATAACCGCGTCCTTCTTCTTTAGCGTTGTGCAAAGCATGTTTTGTATTACGGGCATCTCGAGCGAATC",
-            "DFFFEGDGGGGFGGEDCCDCEFFFFCCCCCB>CEBFGFBGGG?DE=:6@=>A<A>D?D8DCEE:>EEABE5D@5:DDCA;EEE-DCD",
-        ),
-    },
+    sequences_path: str,
     gc_bounds: (int | float | tuple[int | float] | list[int | float]) = (0, 100),
     length_bounds: (tuple[int]) = (0, 2**32),
     quality_threshold: (int | float) = 0,
-    verbose=False,
+    verbose: bool = False,
+    save_filtered_seqs: bool = True,
+    save_to_dir: str = "./fastq_filtrator_resuls",
+    output_filename: str = "",
 ) -> dict:
     """
     Filter out fastq reads by several parameters:
@@ -121,12 +115,15 @@ def run_fastq_filter(
     For GC content and length bounds: if one number is provided, bounds from 0 to number are considered.\n
 
     Arguments:
-    - seqs (dict[str, tuple[str] | list[str]]): fastq reads to be filtered
+    - sequences_path (str): absolute or relative path to desired file, containing sequences in fasta format
     - gc_bounds (int | float | tuple[int | float] | list[int | float]): GC content thresholds
     - length_bounds (int | tuple[int] | list[int]): read length thresholds
     - quality_thresholds (int | float): read Phred-33 scaled quality thresholds
     - verbose (bool): add detailed statistics for each read
-    Examples are provid ed as default values for each argument
+    - save_filtered_seqs (bool): save filtered reads to fasta file
+    - save_to_dir (str): absolute or realtive path to directory to save to
+    - output_filename (str): output name of the filtered fasta file
+    For examples see default values for each argument
 
     Return:
     - seqs_filtered (dict): similar dictionary as input, bad reads are filtered out
@@ -137,9 +134,18 @@ def run_fastq_filter(
         length_bounds,
         quality_threshold,
         verbose,
-    ) = fastq_filter.check_user_input(
+        output_filename,
+    ) = fastq_filter.parse_and_check_user_input(
+        sequences_path,
+        gc_bounds,
+        length_bounds,
+        quality_threshold,
+        verbose,
+        output_filename,
+    )
+    filtered_seqs = fastq_filter.fastq_filter(
         seqs, gc_bounds, length_bounds, quality_threshold, verbose
     )
-    return fastq_filter.fastq_filter(
-        seqs, gc_bounds, length_bounds, quality_threshold, verbose
-    )
+    if save_filtered_seqs:
+        fastq_filter.save_filtered_seqs(filtered_seqs, output_filename, save_to_dir)
+    return filtered_seqs
