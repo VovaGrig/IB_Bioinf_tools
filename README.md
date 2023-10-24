@@ -2,10 +2,12 @@
 ## Tools to work with nucleic acids, protein sequences, fastq reads.
 
 Every bioinfomatician at some point of his/her career deals with nucleic acid sequences, protein sequences. Nowadays it's also hard to imagine bioinformatics without New Generation Sequecning methods and data, that needs to be analyzed with bioinformatician hands. For those reasons as well as for practical experience and better theorethical understanding of bioinformatics I create this repo.
-`bioinf_tools.py` is an open-source program that facilitates working with bioinformatics data.
+`bioinf_tools.py` and 'bio_files_processor.py' are an open-source program that facilitate working with bioinformatics data.
 
 ## Usage and options
-The programm is based on three main functions:
+
+### Bioinf_tools.py
+`bioinf_tools.py` program contains three main functions:
 
 **1.** `run_protein_tools` - facilitates work with protein sequences, has 5 procedures:
   
@@ -75,6 +77,33 @@ For *gc_bounds* and *length_bounds* if one number is provided bounds from 0 to n
 
 Please provide threshold quality in Phred-33 scale.
 
+### Bio Files Processor
+
+`bio_files_processor.py` program contains functions for processing biological sequence files in FASTA and GenBank (gbk) formats.
+
+#### Functions:
+
+- convert_multiline_fasta_to_oneline(input_fasta: str, output_fasta: str = ""): Converts a multiline FASTA file to a one-line FASTA file.
+    - Arguments:
+        - input_fasta (str): Path to the input FASTA file.
+        - output_fasta (str): Path to the output FASTA file. If not provided, output file will be saved in the current directory with the same name as input file but with "_oneline.fasta" suffix.
+    - Returns: None
+
+- select_genes_from_gbk_to_fasta(input_gbk: str, genes: str or tuple[str] or list[str], n_before: int = 1, n_after: int = 1, output_fasta: str = ""): Extracts the translations of neighbour genes in amino acids from a GenBank (gbk) file for a list of desired genes and saves them in a FASTA file format ready for blasting.
+    - Arguments:
+        - input_gbk (str): Path to the input GenBank (gbk) file.
+        - genes (str or tuple[str] or list[str]): Gene name or list of gene names to extract neigbhour genes translations for.
+        - n_before (int, optional): Number of genes to include before the desired gene. Defaults to 1.
+        - n_after (int, optional): Number of genes to include after the desired gene. Defaults to 1.
+        - output_fasta (str, optional): Path to the output FASTA file. If not provided, output file will be saved in the current directory with the same name as input file but with "_trans_for_blast.fasta" suffix.
+    - Returns: None
+  
+- change_fasta_start_pos(input_fasta: str, shift: int, output_fasta: str = ""): Shifts the starting position of each sequence in a FASTA file by a specified number of nucleotides and saves the modified sequences in a new FASTA file.
+    - Arguments:
+        - input_fasta (str): Path to the input FASTA file.
+        - shift (int): Number of nucleotides to shift the starting position of each sequence.
+        - output_fasta (str, optional): Path to the output FASTA file. If not provided, output file will be saved in the current directory with the same name as input file but with "_shifted.fasta" suffix.
+    - Returns: None
 ## Examples
 ```python
 ### run_protein_tools
@@ -132,4 +161,16 @@ run_fastq_filter(gc_bounds=50)
 
 #{'@SRX079804:1:SRR292678:1:1101:21885:21885': ('ACAGCAACATAAACATGATGGGATGGCGTAAGCCCCCGAGATATCAGTTTACCCAGGATAAGAGATTAAATTATGAGCAACATTATTAA', 'FGGGFGGGFGGGFGDFGCEBB@CCDFDDFFFFBFFGFGEFDFFFF;D@DD>C@DDGGGDFGDGG?GFGFEGFGGEF@FDGGGFGFBGGD'),
 # '@SRX079804:1:SRR292678:1:1101:30161:30161': ('GAACGACAGCAGCTCCTGCATAACCGCGTCCTTCTTCTTTAGCGTTGTGCAAAGCATGTTTTGTATTACGGGCATCTCGAGCGAATC', 'DFFFEGDGGGGFGGEDCCDCEFFFFCCCCCB>CEBFGFBGGG?DE=:6@=>A<A>D?D8DCEE:>EEABE5D@5:DDCA;EEE-DCD')}
+
+### convert_multiline_fasta_to_oneline
+convert_multiline_fasta_to_oneline("input.fasta", "output.fasta")
+
+
+### select_genes_from_gbk_to_fasta
+select_genes_from_gbk_to_fasta(example_gbk.gbk, genes="ybgD_2", n_before=10,n_after=10)
+
+
+### change_fasta_start_pos
+change_fasta_start_pos("input.fasta", 3, "output.fasta")
 ```
+
